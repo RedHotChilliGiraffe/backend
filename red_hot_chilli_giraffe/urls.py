@@ -18,9 +18,11 @@ from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 from red_hot_chilli_giraffe.router import router
+from red_hot_chilli_giraffe.lobby.urls import lobby_router
 
 api_urls = [
     path("", include(router.urls)),
+    path("", include(lobby_router.urls)),
     path("auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
