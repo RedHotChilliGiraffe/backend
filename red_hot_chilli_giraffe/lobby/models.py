@@ -8,7 +8,7 @@ class Lobby(models.Model):
     host = models.ForeignKey(User, on_delete=models.CASCADE, related_name="host")
     participant = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, default=None, related_name="participant")
     messages = models.JSONField(default=None, null=True, blank=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     started = models.BooleanField(default=False)
     
     def __str__(self) -> str:

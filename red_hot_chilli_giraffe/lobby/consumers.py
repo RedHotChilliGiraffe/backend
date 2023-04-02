@@ -6,15 +6,13 @@ from channels.generic.websocket import WebsocketConsumer
 from red_hot_chilli_giraffe.lobby.models import Lobby
 import openai
 
+openai.api_key = ""
 
 def make_new_message(conversation):
     return openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=conversation
     )
-
-
-openai.api_key = "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"
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -39,13 +37,11 @@ class ChatConsumer(WebsocketConsumer):
             conversation.append(response['choices'][0]['message'])
             
             self.lobby.messages = conversation
+            self.lobby.is_active = True
             self.lobby.save()
         else:
-            self.lobby.is_active = False
             self.lobby.started = True
-        
-        
-        
+
         self.send(text_data=json.dumps(self.lobby.messages))
         
 
@@ -53,13 +49,10 @@ class ChatConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name, self.channel_name
         )
-        
-
-    #wywoływane nie wiem kiedy XD
-
 
     def receive(self, text_data):
         message = text_data
+        self.lobby = Lobby.objects.get(id=self.lobby_id)
         self.lobby.messages.append({"role": "user", "content": message})
         print(self.lobby.messages)
 

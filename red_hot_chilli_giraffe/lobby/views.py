@@ -15,7 +15,7 @@ class LobbyApiView(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     
     def list(self, request):
-        queryset = Lobby.objects.filter(is_active=True)
+        queryset = Lobby.objects.filter(is_active=True, started=False)
         serializer = LobbyCreateSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
