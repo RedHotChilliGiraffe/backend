@@ -6,20 +6,21 @@ from channels.generic.websocket import WebsocketConsumer
 from red_hot_chilli_giraffe.lobby.models import Lobby
 import openai
 
+
 def make_new_message(conversation):
     return openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=conversation
     )
-openai.api_key = "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"
+
+
+openai.api_key = "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"
 
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
         self.lobby_id = self.scope["url_route"]["kwargs"]["lobby_id"]
-        print(self.lobby_id)
         self.lobby = Lobby.objects.get(id=self.lobby_id)
-        print(self.lobby.participant)
         
         self.group_name = "{}".format(self.lobby_id)
         
@@ -46,8 +47,6 @@ class ChatConsumer(WebsocketConsumer):
         
         
         self.send(text_data=json.dumps(self.lobby.messages))
-        print(json.dumps(self.lobby.messages))
-        
         
 
     def disconnect(self, close_code):
@@ -55,35 +54,28 @@ class ChatConsumer(WebsocketConsumer):
             self.group_name, self.channel_name
         )
         
-        
-        
-        
-        
-        
-    #wywoływane nie wiem kiedy XD
-    def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        print("otrzymuję góra")
-        message = text_data_json["message"]
-        
-        # conversation = self.lobby.messages.append({"role": "user", "content": message},)
 
-        # make_new_message(conversation)
-        
-        # response = make_new_message(conversation)
-        # conversation.append(response['choices'][0]['message'])
-        
-        # self.lobby.messages = json.loads(conversation)
-        # self.lobby.save()
-        
+    #wywoływane nie wiem kiedy XD
+
+
+    def receive(self, text_data):
+        message = text_data
+        self.lobby.messages.append({"role": "user", "content": message})
+        print(self.lobby.messages)
+
+        response = make_new_message(self.lobby.messages)
+        self.lobby.messages.append(response['choices'][0]['message'])
+
+        self.lobby.save()
+
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
-            self.group_name, {"type": "chat_message", "message": response['choices'][0]['message']['content']}
+            self.group_name, {"type": "chat_message", "messages": self.lobby.messages}
         )
     
     def chat_message(self, event):
-        print("otrzymuję")
-        message = event["message"]
+        messages = event["messages"]
 
         # Send message to WebSocket
+        self.send(text_data=json.dumps(messages))
         

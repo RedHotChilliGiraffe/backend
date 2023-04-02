@@ -129,6 +129,8 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
 }
 
+ALLOWED_HOSTS = ["172.20.47.42"]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
