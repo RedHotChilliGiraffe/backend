@@ -71,10 +71,16 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'red_hot_chilli_giraffe.urls'
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['red_hot_chilli_girafe\\lobby\\templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
