@@ -31,4 +31,5 @@ api_urls = [
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/", include(api_urls)),
+    path("chat/", include("red_hot_chilli_giraffe.lobby.urls")),
 ]

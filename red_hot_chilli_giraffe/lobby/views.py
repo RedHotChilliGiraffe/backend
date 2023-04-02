@@ -4,6 +4,8 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from django.shortcuts import render
+
 
 from red_hot_chilli_giraffe.accounts.models import User
 from .models import Lobby
@@ -42,5 +44,8 @@ class LobbyJoinView(viewsets.ModelViewSet):
         queryset.save()
 
         return Response("Hej paweł i zuzia", status=status.HTTP_200_OK)
+    
+def room(request, lobby_id):
+    return render(request, "chat/room.html", {"lobby_id": lobby_id})
     
     
